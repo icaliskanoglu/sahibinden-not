@@ -1,0 +1,1 @@
+### Sahibinden.com ilanlari notlarini tutmak icin eklenti.

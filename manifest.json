@@ -1,0 +1,16 @@
+{
+    "name": "Sahibinden.com ilan Notlari",
+    "version": "1.0.0",
+    "description": "Sahibinden.com ilan notlari",
+    "manifest_version": 3,
+    "author": "Ihsan Caliskanoglu",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "Sahibinden.com Ilan Notlari"
+    },
+    "permissions": [
+        "storage",
+        "activeTab",
+        "tabs"
+    ]
+}
