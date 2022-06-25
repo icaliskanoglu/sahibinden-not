@@ -1,9 +1,19 @@
 // In-page cache of the user's options
-var tablink;
+var prefix;
 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    tablink = tabs[0].url; // or do whatever you need
-    refreshForm(tablink)
+    let tablink = tabs[0].url; // or do whatever you need
+
+    if(!tablink.includes("https://www.sahibinden.com/ilan/")){
+        document.getElementById("wrong-website-warning").hidden = false;
+        document.getElementById("form-container").hidden = true;
+    }
+    else{
+        let start = tablink.lastIndexOf("-");
+        let end = tablink.lastIndexOf("/");
+        prefix = tablink.substring(start+1, end);
+        refreshForm(prefix)
+    }
 });
 
 const toPromise = (callback) => {
@@ -52,13 +62,13 @@ const refreshForm = async (base) => {
 // Immediately persist options changes
 noteForm.note.addEventListener('change', async (event) => {
     console.log('Set Note:', event.target.value);
-    const noteKey = tablink+'-note'
+    const noteKey = prefix+'-note'
     saveData(noteKey, event.target.value)
 });
 
 // Immediately persist options changes
 noteForm.price.addEventListener('change', async (event) => {
     console.log('Set Price:', event.target.value);
-    const priceKey = tablink+'-price'
+    const priceKey = prefix+'-price'
     await saveData(priceKey, event.target.value)
 });
