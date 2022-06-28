@@ -1,8 +1,8 @@
 // In-page cache of the user's options
 var id;
-
+var tablink 
 chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    let tablink = tabs[0].url; // or do whatever you need
+    tablink = tabs[0].url; // or do whatever you need
 
     if (!tablink.includes("https://www.sahibinden.com/ilan/")) {
         document.getElementById("wrong-website-warning").hidden = false;
@@ -67,28 +67,33 @@ const refreshForm = async (id) => {
     noteForm.note.value = note?.note ?? '';
 }
 
-const noteTemplate = ({ id, price, note }) => `
+const noteTemplate = (note) => `
     <dl class="row border">
         <dt class="col-sm-3">Ilan No</dt>
-        <dd class="col-sm-9">${id}</dd>
+        <dd class="col-sm-9">
+        <a href="${note.link}" target="_blank">${note.id}</a>
+        </dd>
         <dt class="col-sm-3">Fiyat</dt>
-        <dd class="col-sm-9">${price}</dd>
+        <dd class="col-sm-9">${note.price}</dd>
         <dt class="col-sm-3">Not</dt>
-        <dd class="col-sm-9">${note}</dd>
+        <dd class="col-sm-9">${note.note}</dd>
     </dl>
 `;
 
 const refreshList = async () => {
-    const notes = await listNotes();
+    const noteDictionary = await listNotes();
+    
+    let notes = Object.values(noteDictionary)
     console.log(notes)
-    document.getElementById("list").innerHTML = Object.values(notes).map(noteTemplate).join('');
+
+    document.getElementById("list").innerHTML =notes.map(note => noteTemplate(note)).join('');
 }
 
 // Immediately persist options changes
 noteForm.note.addEventListener('change', async (event) => {
     console.log('Set Note:', event.target.value);
     const note = await get(id)
-    const newNote = { ...note, note: event.target.value ,id: id }
+    const newNote = { ...note, note: event.target.value ,id: id, link: tablink }
     await save(id, newNote)
 });
 
@@ -96,7 +101,7 @@ noteForm.note.addEventListener('change', async (event) => {
 noteForm.price.addEventListener('change', async (event) => {
     console.log('Set Price:', event.target.value);
     const note = await get(id)
-    const newNote = { ...note, price: event.target.value, id: id }
+    const newNote = { ...note, price: event.target.value, id: id, link: tablink }
     await save(id, newNote)
 });
 
